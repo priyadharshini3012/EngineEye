@@ -35,23 +35,6 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Create `.env` file:
 
-```
-DB_PASSWORD=your_password
-TWILIO_ACCOUNT_SID=your_sid
-TWILIO_AUTH_TOKEN=your_token
-TWILIO_PHONE_NUMBER=your_number
-SECRET_KEY=your_secret
-```
 
----
-
-## 📌 Note
-
-Do not upload `.env` (contains secrets).
-
----
-
-If you want, I can make it **more attractive (with badges + screenshots)** 👍
 
