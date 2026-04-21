@@ -1,19 +1,19 @@
-🚗 EngineEye 
+##🚗 EngineEye 
 
 EngineEye is a smart engine monitoring system that analyzes vehicle data in real-time and predicts engine health. It sends instant alerts via SMS and calls when issues are detected.
+---
 
 
-
-⚙️ Tech Stack 
+##⚙️ Tech Stack 
 
 * Frontend: HTML, CSS, JavaScript
 * Backend: Python (Flask)
 * Database: MySQL
 * Alerts: Twilio
-
+---
  
 
-🚀 Features 
+##🚀 Features 
 
 * Real-time engine health prediction
 * SMS & call alerts for critical issues
@@ -22,7 +22,7 @@ EngineEye is a smart engine monitoring system that analyzes vehicle data in real
 
 ---
 
-🛠️ Setup 
+##🛠️ Setup 
 
 ```bash
 git clone https://github.com/priyadharshini3012/EngineEye.git
