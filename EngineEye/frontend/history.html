@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log History - EngineEye</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .app-layout { display: flex; min-height: 100vh; }
+        .sidebar { width: 280px; background: var(--card-bg); backdrop-filter: blur(20px); border-right: 1px solid var(--glass-border); padding: 32px 24px; display: flex; flex-direction: column; position: fixed; height: 100vh; }
+        .main-app-content { margin-left: 280px; flex: 1; padding: 40px; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 16px; border-radius: 12px; color: var(--text-dim); text-decoration: none; transition: 0.3s; margin-bottom: 8px; }
+        .nav-item:hover, .nav-item.active { background: rgba(34, 211, 238, 0.1); color: var(--primary); }
+    </style>
+</head>
+<body onload="auth.protectPage(); loadHistory()">
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="nav-brand" style="margin-bottom: 48px;">
+                <i data-lucide="activity"></i> EngineEye
+            </div>
+            <nav style="flex: 1;">
+                <a href="dashboard.html" class="nav-item"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+                <a href="history.html" class="nav-item active"><i data-lucide="history"></i> Log History</a>
+                <a href="alerts.html" class="nav-item"><i data-lucide="bell"></i> Alert Center</a>
+            </nav>
+            <div style="border-top: 1px solid var(--glass-border); padding-top: 24px;">
+                <button class="btn-outline-danger" onclick="auth.logout()" style="width: 100%; justify-content: center;">
+                    <i data-lucide="log-out" size="18"></i> Sign Out
+                </button>
+            </div>
+        </aside>
+        
+        <main class="main-app-content">
+            <header style="margin-bottom: 40px;">
+                <h1 style="font-size: 32px;">Readings Archive</h1>
+                <p style="color: var(--text-dim);">Historical data recorded from vehicle sensors</p>
+            </header>
+            
+            <div class="glass-card" style="padding: 0; overflow: hidden;">
+                <table class="history-table" style="margin-bottom: 0;">
+                    <thead style="background: rgba(15, 23, 42, 0.5);">
+                        <tr>
+                            <th style="padding: 20px;">Timestamp</th>
+                            <th>Temperature</th>
+                            <th>RPM</th>
+                            <th>Health Score</th>
+                            <th>Diagnostic Issue</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyBody">
+                        <tr><td colspan="5" style="text-align: center; padding: 60px; color: var(--text-dim);">Synchronizing history...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/shared.js"></script>
+    <script>
+        async function loadHistory() {
+            const { ok, data } = await apiCall('/engine-history');
+            const tbody = document.getElementById('historyBody');
+            
+            if (ok && data.length > 0) {
+                tbody.innerHTML = data.map(h => `
+                    <tr>
+                        <td style="padding: 20px; font-size: 14px; color: var(--text-dim);">${new Date(h.timestamp).toLocaleString()}</td>
+                        <td style="font-weight: 600;">${h.engine_temp}°C</td>
+                        <td>${h.rpm}</td>
+                        <td style="color: ${h.predicted_health_score >= 80 ? 'var(--success)' : h.predicted_health_score >= 60 ? 'var(--warning)' : 'var(--danger)'}; font-weight: 700;">${h.predicted_health_score}%</td>
+                        <td style="font-size: 14px;">${h.predicted_issue}</td>
+                    </tr>
+                `).join('');
+            } else {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 60px; color: var(--text-dim);">No historical logs available yet.</td></tr>';
+            }
+        }
+    </script>
+</body>
+</html>

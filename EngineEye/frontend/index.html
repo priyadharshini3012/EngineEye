@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EngineEye - Advanced AI Engine Monitoring</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 60px;
+            padding: 100px 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .hero-content h1 {
+            font-size: 64px;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            font-weight: 800;
+        }
+        
+        .hero-image img {
+            width: 100%;
+            border-radius: 32px;
+            box-shadow: 0 0 50px rgba(34, 211, 238, 0.2);
+            border: 1px solid var(--glass-border);
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 48px;
+            font-weight: 700;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            padding: 80px 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .feature-card {
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .feature-card i {
+            color: var(--primary);
+            margin-bottom: 24px;
+        }
+        
+        .contact-section {
+            max-width: 800px;
+            margin: 100px auto;
+            padding: 0 32px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i data-lucide="bot"></i> EngineEye
+        </div>
+        <div class="nav-links">
+            <a href="#about">Project Details</a>
+            <a href="#features">Features</a>
+            <a href="#contact">Contact Us</a>
+            <a href="login.html" class="btn-nav outline">Sign In</a>
+            <a href="register.html" class="btn-nav primary">Join Now</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <span style="color: var(--primary); font-weight: 600; letter-spacing: 2px; text-transform: uppercase;">Next-Gen Maintenance</span>
+            <h1>Intelligence for your Engine.</h1>
+            <p style="font-size: 20px; color: var(--text-dim); margin-bottom: 40px;">EngineEye uses advanced Neural Networks to predict mechanical failures before they happen, keeping you safe on every journey.</p>
+            <div style="display: flex; gap: 16px;">
+                <a href="register.html" class="btn-primary" style="width: auto; padding: 16px 32px;">Start Free Analysis</a>
+                <a href="#about" class="btn-nav outline" style="padding: 16px 32px; display: flex; align-items: center; border-radius: 12px;">Learn More</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="assets/images/hero.png" alt="EngineEye AI Illustration">
+        </div>
+    </header>
+
+    <section id="about" class="main-content" style="padding-top: 100px;">
+        <h2 class="section-title">Project Vision</h2>
+        <div class="glass-card" style="line-height: 1.8; color: var(--text-dim);">
+            <p style="margin-bottom: 20px;">EngineEye was developed as part of the <strong>Google Solution Challenge</strong> to solve a critical problem in the automotive industry: unpredictable mechanical failures in two-wheelers. By leveraging real-time IoT sensor data and AI-driven diagnostics, we aim to reduce accidents caused by technical glitches and optimize fuel efficiency.</p>
+            <p>Our system integrates 9 distinct sensor inputs—ranging from thermal signatures to knock frequency—to build a multi-dimensional health report of your vehicle. With Twilio-powered emergency alerts, help is always just an SMS away.</p>
+        </div>
+    </section>
+
+    <section id="features" class="features-grid">
+        <div class="glass-card feature-card">
+            <i data-lucide="zap" size="48"></i>
+            <h3>Real-time Diagnostics</h3>
+            <p style="color: var(--text-dim); margin-top: 16px;">Instant health assessments based on live IoT sensor streams.</p>
+        </div>
+        <div class="glass-card feature-card">
+            <i data-lucide="bell" size="48"></i>
+            <h3>SMS & Voice Alerts</h3>
+            <p style="color: var(--text-dim); margin-top: 16px;">Immediate notifications to your phone when anomalies are detected.</p>
+        </div>
+        <div class="glass-card feature-card">
+            <i data-lucide="line-chart" size="48"></i>
+            <h3>Predictive Maintenance</h3>
+            <p style="color: var(--text-dim); margin-top: 16px;">AI models that anticipate wear and tear before it becomes critical.</p>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <h2 class="section-title">Get in Touch</h2>
+        <div class="glass-card">
+            <form onsubmit="event.preventDefault(); showMessage('success', 'Thank you! Our support team will contact you soon.'); this.reset();">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="user" size="18"></i>
+                        <input type="text" placeholder="John Doe" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="mail" size="18"></i>
+                        <input type="email" placeholder="john@example.com" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Inquiry Message</label>
+                    <textarea rows="4" style="width: 100%; padding-left: 12px; background: rgba(15, 23, 42, 0.3); border: 1px solid var(--glass-border); border-radius: 12px; color: white;"></textarea>
+                </div>
+                <button type="submit" class="btn-primary">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <footer style="text-align: center; padding: 48px; color: var(--text-dim); border-top: 1px solid var(--glass-border);">
+        <p>&copy; 2024 EngineEye AI. Built for the Future of Mobility.</p>
+    </footer>
+
+    <script src="js/shared.js"></script>
+</body>
+</html>

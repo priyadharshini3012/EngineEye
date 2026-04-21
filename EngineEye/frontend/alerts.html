@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alert Center - EngineEye</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .app-layout { display: flex; min-height: 100vh; }
+        .sidebar { width: 280px; background: var(--card-bg); backdrop-filter: blur(20px); border-right: 1px solid var(--glass-border); padding: 32px 24px; display: flex; flex-direction: column; position: fixed; height: 100vh; }
+        .main-app-content { margin-left: 280px; flex: 1; padding: 40px; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 16px; border-radius: 12px; color: var(--text-dim); text-decoration: none; transition: 0.3s; margin-bottom: 8px; }
+        .nav-item:hover, .nav-item.active { background: rgba(34, 211, 238, 0.1); color: var(--primary); }
+        
+        .alert-card {
+            background: rgba(15, 23, 42, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid var(--danger);
+            animation: fadeIn 0.5s ease;
+        }
+    </style>
+</head>
+<body onload="auth.protectPage(); loadAlerts()">
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="nav-brand" style="margin-bottom: 48px;">
+                <i data-lucide="activity"></i> EngineEye
+            </div>
+            <nav style="flex: 1;">
+                <a href="dashboard.html" class="nav-item"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+                <a href="history.html" class="nav-item"><i data-lucide="history"></i> Log History</a>
+                <a href="alerts.html" class="nav-item active"><i data-lucide="bell"></i> Alert Center</a>
+            </nav>
+            <div style="border-top: 1px solid var(--glass-border); padding-top: 24px;">
+                <button class="btn-outline-danger" onclick="auth.logout()" style="width: 100%; justify-content: center;">
+                    <i data-lucide="log-out" size="18"></i> Sign Out
+                </button>
+            </div>
+        </aside>
+        
+        <main class="main-app-content">
+            <header style="margin-bottom: 40px;">
+                <h1 style="font-size: 32px;">Active Notifications</h1>
+                <p style="color: var(--text-dim);">Resolve system anomalies and critical health alerts</p>
+            </header>
+            
+            <div id="alertsList">
+                <div style="text-align: center; padding: 100px; color: var(--text-dim);">
+                    <i data-lucide="refresh-cw" class="spin"></i> Loading alert stream...
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/shared.js"></script>
+    <script>
+        async function loadAlerts() {
+            const { ok, data } = await apiCall('/alerts?unresolved=true');
+            const container = document.getElementById('alertsList');
+            
+            if (ok) {
+                if (data.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 100px; background: rgba(15,23,42,0.3); border-radius: 20px; border: 1px solid var(--glass-border);">
+                            <i data-lucide="check-circle" size="48" style="color: var(--success); margin-bottom: 16px;"></i>
+                            <h3>All Systems Clear</h3>
+                            <p style="color: var(--text-dim);">No unresolved engine anomalies detected.</p>
+                        </div>`;
+                    refreshIcons();
+                    return;
+                }
+                
+                container.innerHTML = data.map(alert => `
+                    <div class="alert-card">
+                        <div>
+                            <h3 style="margin-bottom: 4px;">${alert.alert_type}</h3>
+                            <p style="color: var(--text-dim); margin-bottom: 8px;">${alert.message}</p>
+                            <small style="color: var(--text-dim);"><i data-lucide="clock" size="12"></i> ${new Date(alert.created_at).toLocaleString()}</small>
+                        </div>
+                        <button class="btn-outline-success" onclick="resolveAlert(${alert.id})" style="font-size: 13px;">
+                            <i data-lucide="check" size="14"></i> Mark Resolved
+                        </button>
+                    </div>
+                `).join('');
+                refreshIcons();
+            }
+        }
+
+        async function resolveAlert(id) {
+            const { ok } = await apiCall(`/alerts/${id}/resolve`, 'PUT');
+            if (ok) {
+                showMessage('success', 'Alert successfully resolved');
+                loadAlerts();
+            }
+        }
+    </script>
+</body>
+</html>

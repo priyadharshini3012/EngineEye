@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - EngineEye</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .app-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+        }
+        
+        .main-app-content {
+            margin-left: 280px;
+            flex: 1;
+            padding: 40px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            border-radius: 12px;
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: all 0.3s;
+            margin-bottom: 8px;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: rgba(34, 211, 238, 0.1);
+            color: var(--primary);
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 24px;
+        }
+        
+        .btn-analyze {
+            margin-top: 32px;
+            background: linear-gradient(to right, #22d3ee, #6366f1);
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+        }
+        
+        .btn-analyze:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
+        }
+    </style>
+</head>
+<body onload="auth.protectPage(); loadDashboardData()">
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div class="nav-brand" style="margin-bottom: 48px;">
+                <i data-lucide="activity"></i> EngineEye
+            </div>
+            
+            <nav style="flex: 1;">
+                <a href="dashboard.html" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+                <a href="history.html" class="nav-item"><i data-lucide="history"></i> Log History</a>
+                <a href="alerts.html" class="nav-item"><i data-lucide="bell"></i> Alert Center</a>
+            </nav>
+            
+            <div style="border-top: 1px solid var(--glass-border); padding-top: 24px;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+                    <div style="background: var(--primary); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--bg-dark); font-weight: 800;" id="userInitial">U</div>
+                    <div>
+                        <p style="font-size: 14px; font-weight: 600;" id="displayUsername">User</p>
+                        <p style="font-size: 12px; color: var(--text-dim);">Pro Member</p>
+                    </div>
+                </div>
+                <button class="btn-outline-danger" onclick="auth.logout()" style="width: 100%; justify-content: center;">
+                    <i data-lucide="log-out" size="18"></i> Sign Out
+                </button>
+            </div>
+        </aside>
+        
+        <main class="main-app-content">
+            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+                <div>
+                    <h1 style="font-size: 32px;">Engine Overview</h1>
+                    <p style="color: var(--text-dim);">Real-time status of your two-wheeler powertrain</p>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn-outline-primary" onclick="simulateRandomData()"><i data-lucide="dice-5"></i> Simulate Random</button>
+                </div>
+            </header>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <p style="color: var(--text-dim); font-size: 14px;">Overall Health</p>
+                    <h2 style="font-size: 36px; color: var(--success);" id="healthValue">--</h2>
+                    <p id="healthStatus">Idle</p>
+                </div>
+                <div class="stat-card" style="--primary: var(--warning);">
+                    <p style="color: var(--text-dim); font-size: 14px;">Temperature</p>
+                    <h2 style="font-size: 36px; color: var(--warning);" id="tempValue">--</h2>
+                    <p>Operating Temp</p>
+                </div>
+                <div class="stat-card" style="--primary: var(--secondary);">
+                    <p style="color: var(--text-dim); font-size: 14px;">Revolutions</p>
+                    <h2 style="font-size: 36px; color: var(--secondary);" id="rpmValue">--</h2>
+                    <p>Current RPM</p>
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+                <div class="glass-card" style="padding: 32px;">
+                    <h3 style="margin-bottom: 24px; display: flex; align-items: center; gap: 8px;"><i data-lucide="sliders"></i> Manual Sensor Feed</h3>
+                    <div class="input-grid">
+                        <div class="form-group">
+                            <label>Temp (°C)</label>
+                            <input type="number" id="temp" value="85">
+                        </div>
+                        <div class="form-group">
+                            <label>RPM</label>
+                            <input type="number" id="rpm" value="3000">
+                        </div>
+                        <div class="form-group">
+                            <label>Speed (km/h)</label>
+                            <input type="number" id="speed" value="60">
+                        </div>
+                    </div>
+                    <div class="input-grid">
+                        <div class="form-group">
+                            <label>Throttle (%)</label>
+                            <input type="number" id="throttle" value="25">
+                        </div>
+                        <div class="form-group">
+                            <label>Fuel (%)</label>
+                            <input type="number" id="fuel" value="70">
+                        </div>
+                        <div class="form-group">
+                            <label>Vibration</label>
+                            <input type="number" id="vibration" value="1.2">
+                        </div>
+                    </div>
+                    <button class="btn-analyze" id="analyzeBtn" onclick="performAnalysis()">Run AI Diagnostic</button>
+                </div>
+                
+                <div class="glass-card" style="padding: 32px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <div id="noAnalysis">
+                        <i data-lucide="cpu" size="64" style="color: var(--text-dim); opacity: 0.2; margin-bottom: 24px;"></i>
+                        <h3 style="color: var(--text-dim);">Ready for Analysis</h3>
+                        <p style="color: var(--text-dim); font-size: 14px;">Trigger a diagnostic run to see AI insights</p>
+                    </div>
+                    <div id="analysisResult" style="display: none; width: 100%;">
+                        <div class="health-score-ring" id="healthRing">--</div>
+                        <h3 id="resultTitle">Diagnostic Result</h3>
+                        <p id="resultDesc" style="color: var(--text-dim); margin: 16px 0;"></p>
+                        <div id="anomalyList" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/shared.js"></script>
+    <script>
+        document.getElementById('displayUsername').textContent = auth.getUsername();
+        document.getElementById('userInitial').textContent = auth.getUsername().charAt(0).toUpperCase();
+
+        function simulateRandomData() {
+            document.getElementById('temp').value = (70 + Math.random() * 60).toFixed(1);
+            document.getElementById('rpm').value = Math.floor(1000 + Math.random() * 8000);
+            document.getElementById('speed').value = (Math.random() * 120).toFixed(1);
+            document.getElementById('throttle').value = (Math.random() * 100).toFixed(1);
+            document.getElementById('fuel').value = (Math.random() * 100).toFixed(1);
+            document.getElementById('vibration').value = (0.5 + Math.random() * 5).toFixed(2);
+            showMessage('success', 'IoT inputs updated');
+        }
+
+        async function performAnalysis() {
+            const btn = document.getElementById('analyzeBtn');
+            btn.disabled = true;
+            btn.textContent = 'Neural Processing...';
+            
+            const payload = {
+                engine_temp: parseFloat(document.getElementById('temp').value),
+                rpm: parseInt(document.getElementById('rpm').value),
+                speed: parseFloat(document.getElementById('speed').value),
+                throttle_position: parseFloat(document.getElementById('throttle').value),
+                fuel_level: parseFloat(document.getElementById('fuel').value),
+                vibration: parseFloat(document.getElementById('vibration').value),
+                oxygen_sensor: 0.45, // Defaults
+                knock_sensor: 0.12,
+                maf_sensor: 32.5
+            };
+            
+            const { ok, data } = await apiCall('/engine-data', 'POST', payload);
+            
+            if (ok) {
+                const p = data.prediction;
+                document.getElementById('noAnalysis').style.display = 'none';
+                document.getElementById('analysisResult').style.display = 'block';
+                
+                document.getElementById('healthRing').textContent = `${p.health_score}%`;
+                document.getElementById('healthRing').className = `health-score-ring health-${p.health_score >= 80 ? 'excellent' : p.health_score >= 60 ? 'good' : 'critical'}`;
+                
+                document.getElementById('resultTitle').textContent = p.predicted_issue;
+                document.getElementById('resultDesc').textContent = p.recommendation;
+                
+                const anomalies = document.getElementById('anomalyList');
+                anomalies.innerHTML = '';
+                if (p.detected_issues) {
+                    p.detected_issues.forEach(issue => {
+                        const span = document.createElement('span');
+                        span.style = "background: rgba(239,68,68,0.1); color: var(--danger); padding: 4px 12px; border-radius: 20px; font-size: 12px; border: 1px solid rgba(239,68,68,0.2);";
+                        span.textContent = issue;
+                        anomalies.appendChild(span);
+                    });
+                }
+                
+                if (data.alert_sent) {
+                    showMessage('success', 'Emergency SMS dispatched to ' + auth.getUsername());
+                }
+                
+                loadDashboardData();
+            } else {
+                showMessage('error', 'Diagnostics failed');
+            }
+            
+            btn.disabled = false;
+            btn.textContent = 'Run AI Diagnostic';
+        }
+
+        async function loadDashboardData() {
+            const { ok, data } = await apiCall('/dashboard-stats');
+            if (ok) {
+                document.getElementById('healthValue').textContent = data.latest_health !== null ? `${data.latest_health}%` : '--';
+                document.getElementById('tempValue').textContent = data.latest_temp !== null ? `${data.latest_temp}°C` : '--';
+                document.getElementById('rpmValue').textContent = data.latest_rpm || '--';
+                
+                if (data.latest_health !== null) {
+                    let status = data.latest_health >= 80 ? 'Optimal' : data.latest_health >= 60 ? 'Stable' : 'Unstable';
+                    document.getElementById('healthStatus').textContent = status;
+                    document.getElementById('healthStatus').style.color = data.latest_health >= 80 ? 'var(--success)' : data.latest_health >= 60 ? 'var(--warning)' : 'var(--danger)';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
